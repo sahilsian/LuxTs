@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "nyZbnA2kaT5DK0UlpauFM1/kKyLG/H7rSBlhFvipYlg=",
+  "Source": "Golux.Api",
+  "BasePath": "_content/Golux.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

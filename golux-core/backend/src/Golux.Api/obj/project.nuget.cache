@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Y/ap9AE1JKo=",
+  "success": true,
+  "projectFilePath": "/Users/sahil/Desktop/golux/golux-core/backend/src/Golux.Api/Golux.Api.csproj",
+  "expectedPackageFiles": [
+    "/Users/sahil/.nuget/packages/microsoft.aspnetcore.openapi/9.0.8/microsoft.aspnetcore.openapi.9.0.8.nupkg.sha512",
+    "/Users/sahil/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
