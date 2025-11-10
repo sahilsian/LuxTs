@@ -12,7 +12,7 @@ function App() {
 
     const send = () => {
         console.log("Sending a message");
-        connection && connection.send("newMessage", "SAHIL", "LOL")
+        connection && connection.send("SendMessage", "SAHIL", "LOL")
     }
 
     useEffect(() => {
@@ -22,7 +22,7 @@ function App() {
             console.log("📩 Message received:", username, message)
         };
 
-        connection.on("NewMessage", handler);
+        connection.on("RecieveMessage", handler);
 
     }, [connection]);
 
