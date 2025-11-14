@@ -13,10 +13,10 @@ export class EventBus {
     private buffer: any[] = [];
 
     attachConnection(conn: signalR.HubConnection) {
-        console.log("🚌 attach")
         this.connection = conn;
         if (conn.state === signalR.HubConnectionState.Connected && this.buffer.length > 0 ) {
             for (const event of this.buffer) {
+                console.log("🚌 attach and buffer")
                 conn.invoke("RecieveEvent", event).catch((err) => {
                     console.error("🚌 failed to send event to server: ", err)
                 });
@@ -25,6 +25,7 @@ export class EventBus {
         }
 
         conn.on("RecieveEvent", (raw: any) => {
+            console.log("🚌 attach")
             const cloned = JSON.parse(JSON.stringify(raw));
             const ctor = getBaseWebEvent(cloned.type);
             const event = ctor ? Object.assign(new ctor(cloned.payload), cloned) : cloned;
@@ -46,9 +47,13 @@ export class EventBus {
         this.listeners.set(type, list.filter((l) => l !== listener));
     }
 
-    emit<T extends baseWebEvent>(event: T, _options?: { remote?: boolean }) {
-        console.log("🚌 emit")
-        const list = this.listeners.get(event.type) || [];
+    async emit<T extends baseWebEvent>(event: T, _options?: { remote?: boolean }) {
+
+        const list = [
+            ...((this.listeners.get(event.type) || []) as Listener[]),
+            ...((this.listeners.get("*") || []) as Listener[])
+        ]
+
         for (const listener of list) {
             try {
                 listener(event);
@@ -59,9 +64,13 @@ export class EventBus {
         }
 
         if (event.origin === "client" && this.connection?.state === signalR.HubConnectionState.Connected ) {
-            this.connection.invoke("RecieveEvent", event).catch((err) => {
+            console.log("🚌 emit")
+
+            // SignalR event invoke:
+            await this.connection.invoke("RecieveEvent", event).catch((err) => {
                 console.error("Failed to send event to server: ", err)
             });
+
         } else {
             if (event.origin !== "client") return
             console.warn("🚌 server connection is not ready, buffering event:", event.type);

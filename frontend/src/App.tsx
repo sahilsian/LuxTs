@@ -1,42 +1,21 @@
 import './App.css'
-import Button from "./components/ui/control/button";
-import {AmbulanceIcon} from "lucide-react";
 import useSystem from "./hooks/useSystem.ts";
 import {useEffect} from "react";
+import Router from "./core/system/route/router.tsx";
+import withListeners from "./withListeners.tsx";
+
+const HUB_CONNECTION_URL = "http://localhost:5073/hub";
+
 function App() {
     const {status, createConnection} = useSystem();
 
     useEffect(() => {
-        console.log("Status changed to", status);
         if (status === "idle") {
-            createConnection("http://localhost:5073/hub");
+            createConnection(HUB_CONNECTION_URL);
         }
-    }, [status]);
+    }, [status, createConnection]);
 
-    return (
-        <div className='entry'>
-            <Button
-                variant={"primary"}
-                icon={{
-                    component: <AmbulanceIcon/>,
-                    size: 'medium'
-                }}
-                label={"Connect"}
-            >
-
-            </Button>
-            <Button
-                variant={"primary"}
-                icon={{
-                    component: <AmbulanceIcon/>,
-                    size: 'medium'
-                }}
-                label={"Send a lol"}
-            >
-
-            </Button>
-        </div>
-    )
+    return <Router/>
 }
 
-export default App
+export default withListeners(App)

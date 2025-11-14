@@ -56,7 +56,9 @@ export const createConnection =
 
             await newConnection.start();
             eventBus.attachConnection(newConnection);
-            eventBus.emit(new SystemInitialize({ environment: "development" }));
+            const init = new SystemInitialize({ environment: "development" });
+            eventBus.emit(init);
+            await init._run();
 
             return newConnection;
         } catch (error) {

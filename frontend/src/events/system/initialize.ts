@@ -1,6 +1,7 @@
 // High level macro event for running the application
 import { RegisterBaseWebEvent } from "../../models/webEvents/decorator.ts";
 import type {baseWebEvent} from "../../models/webEvents/baseWebEvent.ts";
+import {eventBus} from "../../core/system/bus/eventBus.ts";
 
 export interface SystemInitializePayload {
     environment?: "development" | "staging" | "production";
@@ -26,9 +27,36 @@ class SystemInitialize implements baseWebEvent<SystemInitializePayload> {
         this.type = "system.initialize";
         this.origin = "client";
         this.status = "ok";
-        this.session = session ?? crypto.randomUUID();
+        this.session = session ?? SystemInitialize.getOrCreateSessionId();
         this.payload = payload;
         this.timestamp = Date.now();
+    }
+
+    async _run() {
+        await eventBus.emit({
+            id: crypto.randomUUID(),
+            seq: 1,
+            session: this.session,
+            window: "system",
+            type: "system.ready",
+            origin: "client",
+            status: "ok",
+            payload: {},
+            timestamp: Date.now(),
+        });
+    }
+
+    private static getOrCreateSessionId() {
+        const key = "golux-session";
+        let sessionId = localStorage.getItem(key);
+        if (!sessionId) {
+            sessionId = crypto.randomUUID();
+            localStorage.setItem(key, sessionId);
+            console.log("🧭 created new session:", sessionId);
+        } else {
+            console.log("🧭 restored existing session:", sessionId);
+        }
+        return sessionId;
     }
 }
 
